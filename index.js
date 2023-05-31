@@ -33,6 +33,7 @@ async function run() {
 
     const menuCollection = client.db("zaraDB").collection("menu");
     const reviewsCollection = client.db("zaraDB").collection("reviews");
+    const cartCollection = client.db("zaraDB").collection("carts");
 
 
     app.get('/menu', async(req, res)=>{
@@ -43,6 +44,26 @@ async function run() {
     app.get('/reviews', async(req, res)=>{
         const result = await reviewsCollection.find().toArray();
         res.send(result)
+    })
+
+    // cart collection
+    app.get('/carts', async(req, res)=>{
+      const email = req.query.email;
+      // console.log(email)
+      if(!email){
+        res.send([]);
+      }
+      const query = { email: email };
+      const result = await cartCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    app.post('/carts', async(req, res)=>{
+      const item = req.body;
+      // console.log(item);
+      const result = await cartCollection.insertOne(item);
+      console.log('result', result)
+      res.send(result)
     })
 
 
@@ -66,3 +87,4 @@ app.get('/',(req, res)=>{
 app.listen(port, ()=>{
     console.log(`ZaRa server is running on port: ${port}`)
 })
+
