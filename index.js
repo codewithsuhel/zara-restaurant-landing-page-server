@@ -31,16 +31,25 @@ async function run() {
     await client.connect();
 
 
+    const usersCollection = client.db("zaraDB").collection("users");
     const menuCollection = client.db("zaraDB").collection("menu");
     const reviewsCollection = client.db("zaraDB").collection("reviews");
     const cartCollection = client.db("zaraDB").collection("carts");
 
+    // users related apis
+    app.post('/users', async(req, res)=>{
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result)
+    })
 
+    // menu related apis
     app.get('/menu', async(req, res)=>{
         const result = await menuCollection.find().toArray();
         res.send(result)
     })
 
+    // reviews related apis
     app.get('/reviews', async(req, res)=>{
         const result = await reviewsCollection.find().toArray();
         res.send(result)
